@@ -6,16 +6,17 @@
 #include "log.h"
 #include "config.h"
 #include "tree_io.h"
+#include "diff.h"
 #include "graphviz.h"
 
-static BinTreeError insert_node_to_pointer(Node **node_ptr, tree_el_t value);
+static BinTreeError insert_node_to_pointer(Node **node_ptr, NodeDataType type, tree_el_t value);
 
 // если дерево пусто, то tree->root = NULL; node = NULL; child_type = ROOT_CHILD
 // в таком случае вставка элемента в корень пройдет успешно
 // если же хоть одно из этих условий не выполняется при наличии остальных, то это ошибка
 // короче говоря, для корректной вставки или должны быть выполнены все приведенные условия
 // или ни одно из них
-BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, tree_el_t value)
+BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, NodeDataType type, tree_el_t value)
 {
     assert(tree);
 
@@ -28,7 +29,7 @@ BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, t
         FLOG("<h1>Inserting node with value \"" TREE_EL_SPECIFICATOR "\" to the tree [%p] root</h1>",
              value, tree);
 
-        error = insert_node_to_pointer(&tree->root, value);
+        error = insert_node_to_pointer(&tree->root, type, value);
     }
 
     else if (!(cond1 || cond2 || cond3))
@@ -40,10 +41,10 @@ BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, t
         switch (child_type)
         {
         case LEFT_CHILD:
-            error = insert_node_to_pointer(&node->left, value);
+            error = insert_node_to_pointer(&node->left, type, value);
             break;
         case RIGHT_CHILD:
-            error = insert_node_to_pointer(&node->right, value);
+            error = insert_node_to_pointer(&node->right, type, value);
             break;
         case ROOT_CHILD:
         default:
@@ -114,7 +115,6 @@ void node_destroy(Node **node)
     if ((*node)->right)
         node_destroy(&(*node)->right);
 
-    free_ptr((*node)->data);
     free_ptr(*node);
 }
 
@@ -150,8 +150,7 @@ void tree_dump(BinTree *tree)
         return;
     }
 
-    // в претти моде (чтобы были видны ДА / НЕТ)
-    if (write_graph(tree, filename, 1))
+    if (write_graph(tree, filename))
     {
         FLOG("Error: cant write write graph to file %s", filename);
         return;
@@ -179,7 +178,7 @@ const char *tree_get_str_child_type(ChildType child_type)
     return STR_BIN_TREE_CHILD_TYPES[child_type];
 }
 
-static BinTreeError insert_node_to_pointer(Node **node_ptr, tree_el_t value)
+static BinTreeError insert_node_to_pointer(Node **node_ptr, NodeDataType type, tree_el_t value)
 {
     assert(node_ptr);
     assert(!*node_ptr);
@@ -190,6 +189,7 @@ static BinTreeError insert_node_to_pointer(Node **node_ptr, tree_el_t value)
         FLOG("Error while allocating memory for node with value " TREE_EL_SPECIFICATOR, value);
         return TREE_MEMORY_ERROR;
     }
+    new_node->type = type;
     new_node->data = value;
 
     *node_ptr = new_node;

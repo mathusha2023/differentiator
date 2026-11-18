@@ -5,27 +5,15 @@
 
 static void draw_node(Node *node, FILE *file, const char *left_label, const char *right_label);
 
-// mode: 0 - debug, 1 - pretty
-int write_graph(BinTree *tree, const char *filename, int mode)
+int write_graph(BinTree *tree, const char *filename)
 {
     assert(tree);
     assert(filename);
 
-    if (mode == 1)
+    if (generate_debug_graph_file(tree))
     {
-        if (generate_pretty_graph_file(tree))
-        {
-            FLOG("Error: can not generate graph");
-            return 1;
-        }
-    }
-    else
-    {
-        if (generate_debug_graph_file(tree))
-        {
-            FLOG("Error: can not generate graph");
-            return 1;
-        }
+        FLOG("Error: can not generate graph");
+        return 1;
     }
 
     char command[MAX_SYS_COMMAND_LENGTH] = {};
@@ -62,13 +50,6 @@ int generate_graph_file(BinTree *tree, const char *left_label, const char *right
     return 0;
 }
 
-int generate_pretty_graph_file(BinTree *tree)
-{
-    assert(tree);
-
-    return generate_graph_file(tree, "ДА", "НЕТ");
-}
-
 int generate_debug_graph_file(BinTree *tree)
 {
     assert(tree);
@@ -81,8 +62,24 @@ static void draw_node(Node *node, FILE *file, const char *left_label, const char
     assert(node);
     assert(file);
 
-    fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"\\\"" TREE_EL_SPECIFICATOR "\\\"\"; fillcolor=\"%s\"; color=\"%s\"]\n",
-            node, NODE_FONT_SIZE, NODE_FONT_COLOR, node->data, NODE_FILL_COLOR, NODE_COLOR);
+    switch (node->type)
+    {
+    case DT_NUM:
+        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"" TREE_EL_SPECIFICATOR "\"; fillcolor=\"%s\"; color=\"%s\"]\n",
+                node, NODE_FONT_SIZE, NODE_FONT_COLOR, node->data, NODE_FILL_COLOR, NODE_COLOR);
+        break;
+    case DT_VAR:
+        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"%s\"; fillcolor=\"%s\"; color=\"%s\"]\n",
+                node, NODE_FONT_SIZE, NODE_FONT_COLOR, get_str_variable((enum Variables)node->data), NODE_FILL_COLOR, NODE_COLOR);
+        break;
+    case DT_OP:
+        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"%s\"; fillcolor=\"%s\"; color=\"%s\"]\n",
+                node, NODE_FONT_SIZE, NODE_FONT_COLOR, get_str_operator((enum Operators)node->data), NODE_FILL_COLOR, NODE_COLOR);
+        break;
+    default:
+        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"%s\"; fillcolor=\"%s\"; color=\"%s\"]\n",
+                node, NODE_FONT_SIZE, NODE_FONT_COLOR, "Пошел нахуй сын шлюхи", "#FF0000", NODE_COLOR);
+    }
 
     if (node->left)
     {

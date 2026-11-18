@@ -13,9 +13,8 @@ const int ARROW_HINT_FONT_SIZE = 14;
 static const char *LEFT_EDGE_COLOR = "#2cc834";
 static const char *RIGHT_EDGE_COLOR = "#be15ca";
 
-int write_graph(BinTree *tree, const char *filename, int mode);
+int write_graph(BinTree *tree, const char *filename);
 int generate_graph_file(BinTree *tree, const char *left_label, const char *right_label);
-int generate_pretty_graph_file(BinTree *tree);
 int generate_debug_graph_file(BinTree *tree);
 
 #endif // GRAPHVIZ_H

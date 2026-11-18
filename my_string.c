@@ -1,6 +1,8 @@
 #include "my_string.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
+#include "config.h"
 
 char *copy_string_to_char_arr(String string)
 {
@@ -32,4 +34,18 @@ char *stringchr(String string, char c)
             return string.p + i;
     }
     return NULL;
+}
+
+char *get_str_num(double num)
+{
+    char buff[MAX_NODE_DATA_LENGTH] = {};
+
+    int res = snprintf(buff, MAX_NODE_DATA_LENGTH, "%lg", num);
+
+    if (res < 0)
+        return NULL;
+
+    char *p = (char *)calloc((size_t)res + 1, sizeof(char));
+
+    return p;
 }

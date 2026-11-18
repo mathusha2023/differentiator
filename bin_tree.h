@@ -2,9 +2,10 @@
 #define BIN_TREE_H
 
 #include <stddef.h>
+#include "diff.h"
 
-typedef char *tree_el_t;
-#define TREE_EL_SPECIFICATOR "%s"
+typedef double tree_el_t;
+#define TREE_EL_SPECIFICATOR "%lg"
 
 typedef enum BinTreeError
 {
@@ -36,6 +37,7 @@ static const char *STR_BIN_TREE_CHILD_TYPES[] = {
 
 typedef struct Node
 {
+    enum NodeDataType type;
     tree_el_t data;
     Node *left;
     Node *right;
@@ -47,7 +49,7 @@ typedef struct BinTree
     size_t n_nodes;
 } BinTree;
 
-BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, tree_el_t value);
+BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, NodeDataType type, tree_el_t value);
 void tree_destroy(BinTree *tree);
 void node_destroy(Node **node);
 

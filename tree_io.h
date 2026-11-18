@@ -18,6 +18,7 @@ typedef enum TreeIOError
     TREE_IO_FILE_ERROR,
     TREE_IO_INCORRECT_STRING_FORMAT,
     TREE_IO_MEMORY_ERROR,
+    TREE_IO_INCORRECT_VALUE,
 } TreeIOError;
 
 static const char *STR_TREE_IO_ERRORS[] = {
@@ -25,6 +26,7 @@ static const char *STR_TREE_IO_ERRORS[] = {
     "TREE_IO_FILE_ERROR",
     "TREE_IO_INCORRECT_STRING_FORMAT",
     "TREE_IO_MEMORY_ERROR",
+    "TREE_IO_INCORRECT_VALUE",
 };
 
 TreeIOError write_tree_in_file_by_filename(BinTree *tree, const char *filename, TreeOrders order);
