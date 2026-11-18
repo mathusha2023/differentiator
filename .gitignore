@@ -1,0 +1,9 @@
+.idea
+.vscode
+.VSCodeCounter
+log
+*.dSYM
+TODO.md
+.DS_Store
+diff
+data.txt
