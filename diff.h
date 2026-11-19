@@ -21,7 +21,7 @@ enum Operators
     OP_MUL,
     OP_DIV,
     OP_POW,
-    OP_LOG,
+    OP_LN,
     OP_SIN,
     OP_COS,
     OP_TG,
@@ -42,7 +42,7 @@ static const char *STR_OPERATORS[] = {
     "MUL",
     "DIV",
     "POW",
-    "LOG",
+    "LN",
     "SIN",
     "COS",
     "TG",
@@ -55,6 +55,27 @@ static const char *STR_OPERATORS[] = {
     "CH",
     "TH",
     "CTH",
+};
+
+static const char *STR_OPERATORS_TEX[] = {
+    "+",                      // ADD
+    "-",                      // SUB
+    "\\cdot",                 // MUL
+    "\\frac",                 // DIV
+    "^",                      // POW
+    "\\ln",                   // LOG
+    "\\sin",                  // SIN
+    "\\cos",                  // COS
+    "\\tan",                  // TG
+    "\\cot",                  // CTG
+    "\\arcsin",               // ARCSIN
+    "\\arccos",               // ARCCOS
+    "\\arctan",               // ARCTG
+    "\\operatorname{arccot}", // ARCCTG
+    "\\sinh",                 // SH
+    "\\cosh",                 // CH
+    "\\tanh",                 // TH
+    "\\coth"                  // CTH
 };
 
 typedef enum NodeDataType
@@ -70,7 +91,9 @@ static const char *STR_NODE_DATA_TYPES[] = {
     "DT_OP",
 };
 
+int is_unary_op(enum Operators op);
 const char *get_str_operator(enum Operators op);
+const char *get_str_tex_operator(enum Operators op);
 const char *get_str_variable(enum Variables var);
 const char *get_str_node_data_type(NodeDataType type);
 

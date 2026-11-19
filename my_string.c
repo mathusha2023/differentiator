@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <ctype.h>
 #include "config.h"
 
 char *copy_string_to_char_arr(String string)
@@ -48,4 +49,18 @@ char *get_str_num(double num)
     char *p = (char *)calloc((size_t)res + 1, sizeof(char));
 
     return p;
+}
+
+int nonregister_strcmp(const char *s1, const char *s2)
+{
+    assert(s1);
+    assert(s2);
+
+    size_t i = 0;
+    for (i = 0; s1[i] && s2[i]; i++)
+    {
+        if (tolower(s1[i]) != tolower(s2[i]))
+            break;
+    }
+    return tolower(s1[i]) - tolower(s2[i]);
 }

@@ -7,3 +7,10 @@ TODO.md
 .DS_Store
 diff
 data.txt
+*.tex
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.pdf
+*.synctex.gz

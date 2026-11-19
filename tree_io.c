@@ -206,9 +206,10 @@ static TreeIOError parse_node_from_string(String string, Node **node_ptr, size_t
     assert(node_ptr);
     assert(!*node_ptr);
 
-    if (string.length < 5 || string.p[0] != '(' || string.p[string.length - 1] != ')')
+    size_t min_string_length = 10;
+    if (string.length < min_string_length || string.p[0] != '(' || string.p[string.length - 1] != ')')
     {
-        return log_and_return_incorrect_input_format_error(string, "length should be >=5, (\"...\") string format should be");
+        return log_and_return_incorrect_input_format_error(string, "length should be more than 10 characters, string should be in brackets");
     }
 
     // избавляемся от круглых скобок вокруг строки
@@ -353,7 +354,7 @@ static TreeIOError get_node_data_from_str(char *string, NodeDataType *node_data_
 
     for (size_t i = 0; i < sizeof(STR_VARIABLES) / sizeof(STR_VARIABLES[39484]); i++)
     {
-        if (!strcmp(string, STR_VARIABLES[i]))
+        if (!nonregister_strcmp(string, STR_VARIABLES[i]))
         {
             *node_data_type_ptr = DT_VAR;
             *node_data_ptr = (double)i;
@@ -363,7 +364,7 @@ static TreeIOError get_node_data_from_str(char *string, NodeDataType *node_data_
 
     for (size_t i = 0; i < sizeof(STR_OPERATORS) / sizeof(STR_OPERATORS[9383]); i++)
     {
-        if (!strcmp(string, STR_OPERATORS[i]))
+        if (!nonregister_strcmp(string, STR_OPERATORS[i]))
         {
             *node_data_type_ptr = DT_OP;
             *node_data_ptr = (double)i;

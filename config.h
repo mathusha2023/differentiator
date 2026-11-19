@@ -26,6 +26,7 @@ const char GRAPH_DIRECTORY[] = "log";
 const char PROGRAM_NAME[] = "diff";
 
 const char DATA_FILE_NAME[] = "data.txt";
+const char TECH_FILE_NAME[] = "res.tex";
 
 const size_t MAX_FILENAME_LENGTH = 100;
 const size_t MAX_SYS_COMMAND_LENGTH = 200;

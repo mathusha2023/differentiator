@@ -3,6 +3,7 @@
 #include "config.h"
 #include "log.h"
 #include "diff.h"
+#include "tex.h"
 
 int main(void)
 {
@@ -22,6 +23,8 @@ int main(void)
     // tree_insert_node(&tree, tree.root, RIGHT_CHILD, DT_NUM, -13.291);
 
     // tree_print(&tree);
+
+    dump_tree_to_tex(&tree, "res1.tex");
 
     tree_destroy(&tree);
 
