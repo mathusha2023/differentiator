@@ -49,7 +49,7 @@ TreeIOError write_tree_in_file(BinTree *tree, FILE *file, TreeOrders order)
     {                                                                          \
         switch (node->type)                                                    \
         {                                                                      \
-        case DT_NUM:                                                           \
+        case DT_CONST:                                                         \
             fprintf(file, TREE_EL_SPECIFICATOR, node->data);                   \
             break;                                                             \
         case DT_VAR:                                                           \
@@ -216,7 +216,7 @@ static TreeIOError parse_node_from_string(String string, Node **node_ptr, size_t
     string.p++;
     string.length -= 2;
 
-    NodeDataType node_data_type = DT_NUM;
+    NodeDataType node_data_type = DT_CONST;
     tree_el_t node_data = 0;
     size_t i = 0;
 
@@ -347,7 +347,7 @@ static TreeIOError get_node_data_from_str(char *string, NodeDataType *node_data_
 
     if (endptr != string && *endptr == '\0')
     {
-        *node_data_type_ptr = DT_NUM;
+        *node_data_type_ptr = DT_CONST;
         *node_data_ptr = value;
         return TREE_IO_OK;
     }

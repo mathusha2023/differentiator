@@ -18,13 +18,7 @@ int main(void)
         return error;
     }
 
-    // tree_insert_node(&tree, NULL, ROOT_CHILD, DT_OP, 2);
-    // tree_insert_node(&tree, tree.root, LEFT_CHILD, DT_VAR, 0);
-    // tree_insert_node(&tree, tree.root, RIGHT_CHILD, DT_NUM, -13.291);
-
-    // tree_print(&tree);
-
-    dump_tree_to_tex(&tree, "res1.tex");
+    dump_tree_to_tex(&tree, TECH_FILE_NAME);
 
     tree_destroy(&tree);
 

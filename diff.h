@@ -6,12 +6,14 @@ enum Variables
     VAR_X,
     VAR_Y,
     VAR_T,
+    VAR_E,
 };
 
 static const char *STR_VARIABLES[] = {
     "x",
     "y",
     "t",
+    "e",
 };
 
 enum Operators
@@ -80,13 +82,13 @@ static const char *STR_OPERATORS_TEX[] = {
 
 typedef enum NodeDataType
 {
-    DT_NUM,
+    DT_CONST,
     DT_VAR,
     DT_OP,
 } NodeDataType;
 
 static const char *STR_NODE_DATA_TYPES[] = {
-    "DT_NUM",
+    "DT_CONST",
     "DT_VAR",
     "DT_OP",
 };

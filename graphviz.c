@@ -64,7 +64,7 @@ static void draw_node(Node *node, FILE *file, const char *left_label, const char
 
     switch (node->type)
     {
-    case DT_NUM:
+    case DT_CONST:
         fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"" TREE_EL_SPECIFICATOR "\"; fillcolor=\"%s\"; color=\"%s\"]\n",
                 node, NODE_FONT_SIZE, NODE_FONT_COLOR, node->data, NODE_FILL_COLOR, NODE_COLOR);
         break;
