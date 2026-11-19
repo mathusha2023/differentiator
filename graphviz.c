@@ -65,20 +65,20 @@ static void draw_node(Node *node, FILE *file, const char *left_label, const char
     switch (node->type)
     {
     case DT_CONST:
-        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"" TREE_EL_SPECIFICATOR "\"; fillcolor=\"%s\"; color=\"%s\"]\n",
-                node, NODE_FONT_SIZE, NODE_FONT_COLOR, node->data, NODE_FILL_COLOR, NODE_COLOR);
+        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"{type = %s | " TREE_EL_SPECIFICATOR "}\"; fillcolor=\"%s\"; color=\"%s\"]\n",
+                node, NODE_FONT_SIZE, NODE_FONT_COLOR, get_str_node_data_type(node->type), node->data, CONST_FILL_COLOR, CONST_COLOR);
         break;
     case DT_VAR:
-        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"%s\"; fillcolor=\"%s\"; color=\"%s\"]\n",
-                node, NODE_FONT_SIZE, NODE_FONT_COLOR, get_str_variable((enum Variables)node->data), NODE_FILL_COLOR, NODE_COLOR);
+        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"{type = %s | %s}\"; fillcolor=\"%s\"; color=\"%s\"]\n",
+                node, NODE_FONT_SIZE, NODE_FONT_COLOR, get_str_node_data_type(node->type), get_str_variable((enum Variables)node->data), VAR_FILL_COLOR, VAR_COLOR);
         break;
     case DT_OP:
-        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"%s\"; fillcolor=\"%s\"; color=\"%s\"]\n",
-                node, NODE_FONT_SIZE, NODE_FONT_COLOR, get_str_operator((enum Operators)node->data), NODE_FILL_COLOR, NODE_COLOR);
+        fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"{type = %s |%s}\"; fillcolor=\"%s\"; color=\"%s\"]\n",
+                node, NODE_FONT_SIZE, NODE_FONT_COLOR, get_str_node_data_type(node->type), get_str_operator((enum Operators)node->data), OP_FILL_COLOR, OP_COLOR);
         break;
     default:
         fprintf(file, "  V%p [fontsize=%d; fontcolor=\"%s\"; label = \"%s\"; fillcolor=\"%s\"; color=\"%s\"]\n",
-                node, NODE_FONT_SIZE, NODE_FONT_COLOR, "Пошел нахуй сын шлюхи", "#FF0000", NODE_COLOR);
+                node, NODE_FONT_SIZE, NODE_FONT_COLOR, "Пошел нахуй сын шлюхи", ERROR_FILL_COLOR, ERROR_COLOR);
     }
 
     if (node->left)
