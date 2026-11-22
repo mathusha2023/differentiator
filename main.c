@@ -8,8 +8,10 @@
 int main(void)
 {
     restart_log();
+    init_tex(TEX_FILE_NAME);
 
     BinTree tree = {};
+    BinTree dtree = {};
 
     TreeIOError error = parse_tree_from_file_by_filename(&tree, DATA_FILE_NAME);
     if (error != TREE_IO_OK)
@@ -18,9 +20,17 @@ int main(void)
         return error;
     }
 
-    dump_tree_to_tex(&tree, TECH_FILE_NAME);
+    dump_tree_to_tex(&tree, TEX_FILE_NAME);
+
+    diff_tree(&tree, &dtree, VAR_X);
+
+    dump_tree_to_tex(&dtree, TEX_FILE_NAME);
 
     tree_destroy(&tree);
+    tree_destroy(&dtree);
+
+    close_tex(TEX_FILE_NAME);
+    generate_tex(TEX_FILE_NAME);
 
     close_log();
 

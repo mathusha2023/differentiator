@@ -50,6 +50,9 @@ typedef struct BinTree
 } BinTree;
 
 BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, NodeDataType type, tree_el_t value);
+Node *make_new_node(NodeDataType type, tree_el_t data, Node *left, Node *right);
+Node *copy_node(Node *node);
+
 void tree_destroy(BinTree *tree);
 void node_destroy(Node **node);
 

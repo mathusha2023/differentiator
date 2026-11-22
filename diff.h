@@ -1,6 +1,9 @@
 #ifndef DIFF_H
 #define DIFF_H
 
+typedef struct Node Node;
+typedef struct BinTree BinTree;
+
 enum Variables
 {
     VAR_X,
@@ -23,6 +26,8 @@ enum Operators
     OP_MUL,
     OP_DIV,
     OP_POW,
+    OP_ROOT,
+    OP_SQRT,
     OP_LN,
     OP_SIN,
     OP_COS,
@@ -44,6 +49,8 @@ static const char *STR_OPERATORS[] = {
     "MUL",
     "DIV",
     "POW",
+    "ROOT",
+    "SQRT",
     "LN",
     "SIN",
     "COS",
@@ -65,6 +72,8 @@ static const char *STR_OPERATORS_TEX[] = {
     "\\cdot",                 // MUL
     "\\frac",                 // DIV
     "^",                      // POW
+    "\\sqrt",                 // ROOT
+    "\\sqrt",                 // SQRT
     "\\ln",                   // LOG
     "\\sin",                  // SIN
     "\\cos",                  // COS
@@ -92,6 +101,10 @@ static const char *STR_NODE_DATA_TYPES[] = {
     "DT_VAR",
     "DT_OP",
 };
+
+void diff_tree(BinTree *tree, BinTree *dtree, enum Variables diff_var);
+Node *diff(Node *node, enum Variables diff_var);
+Node *diff_operator(Node *node_left, Node *node_right, enum Operators op, enum Variables diff_var);
 
 int is_unary_op(enum Operators op);
 const char *get_str_operator(enum Operators op);

@@ -82,6 +82,32 @@ BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, N
     return error;
 }
 
+Node *make_new_node(NodeDataType type, tree_el_t data, Node *left, Node *right)
+{
+    Node *new_node = (Node *)calloc(1, sizeof(Node));
+    if (!new_node)
+    {
+        FLOG("Error while allocating memory for node with value " TREE_EL_SPECIFICATOR, data);
+        return NULL;
+    }
+
+    new_node->type = type;
+    new_node->data = data;
+    new_node->left = left;
+    new_node->right = right;
+
+    return new_node;
+}
+
+// глубокое копирование узла (т.е. также копируем все его подузлы)
+Node *copy_node(Node *node)
+{
+    if (!node)
+        return NULL;
+
+    return make_new_node(node->type, node->data, copy_node(node->left), copy_node(node->right));
+}
+
 void tree_destroy(BinTree *tree)
 {
     assert(tree);
@@ -183,14 +209,12 @@ static BinTreeError insert_node_to_pointer(Node **node_ptr, NodeDataType type, t
     assert(node_ptr);
     assert(!*node_ptr);
 
-    Node *new_node = (Node *)calloc(1, sizeof(Node));
-    if (!new_node)
+    Node *new_node = make_new_node(type, value, NULL, NULL);
+    if (new_node == NULL)
     {
-        FLOG("Error while allocating memory for node with value " TREE_EL_SPECIFICATOR, value);
+        FLOG("Error: can not make new node");
         return TREE_MEMORY_ERROR;
     }
-    new_node->type = type;
-    new_node->data = value;
 
     *node_ptr = new_node;
     return TREE_OK;
