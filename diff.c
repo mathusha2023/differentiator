@@ -294,6 +294,8 @@ const char *get_str_tex_operator(enum Operators op)
 
 const char *get_str_variable(enum Variables var)
 {
+    if (var == VAR_PI)
+        return "\\pi";
     return STR_VARIABLES[var];
 }
 

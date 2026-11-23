@@ -11,6 +11,7 @@ enum Variables
     VAR_Y,
     VAR_T,
     VAR_E,
+    VAR_PI,
 };
 
 static const char *STR_VARIABLES[] = {
@@ -18,6 +19,7 @@ static const char *STR_VARIABLES[] = {
     "y",
     "t",
     "e",
+    "pi",
 };
 
 enum Operators
