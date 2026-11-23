@@ -1,16 +1,31 @@
 #include "diff.h"
 #include <assert.h>
+#include <math.h>
 #include "log.h"
 #include "bin_tree.h"
 #include "my_string.h"
 #include "tree_io.h"
 #include "dsl.h"
 
+static int is_zero(Node *node);
+static int is_one(Node *node);
+static int is_minus_one(Node *node);
+static int is_e(Node *node);
+
 void diff_tree(BinTree *tree, BinTree *dtree, enum Variables diff_var)
 {
-    dtree->root = diff(tree->root, diff_var);
+    BinTree tmp_tree = {};
+    tmp_tree.root = diff(tree->root, diff_var);
 
-    FLOG("Tree after diff:");
+    FLOG("<h1>Tree after diff without constants folding:</h1>");
+    tree_dump(&tmp_tree);
+
+    dtree->root = fold_consts(tmp_tree.root);
+    dtree->n_nodes = count_tree_size(dtree);
+
+    tree_destroy(&tmp_tree);
+
+    FLOG("<h1>Tree after diff with constant folding:</h1>");
     tree_dump(dtree);
 }
 
@@ -71,8 +86,11 @@ Node *diff_operator(Node *node_left, Node *node_right, enum Operators op, enum V
         else
         {
             Node *pow = pow_node(CL, CR);
-            Node *mul = mul_node(CR, ln_node(CL));
 
+            if (node_left->type == DT_VAR && is_e(node_left))
+                return mul_node(pow, diff(CR, diff_var));
+
+            Node *mul = mul_node(CR, ln_node(CL));
             return mul_node(pow, diff(mul, diff_var));
         }
     }
@@ -150,6 +168,115 @@ Node *diff_operator(Node *node_left, Node *node_right, enum Operators op, enum V
     }
 }
 
+Node *fold_consts(Node *node)
+{
+    if (!node)
+        return NULL;
+
+    if (node->type != DT_OP)
+        return copy_node(node);
+
+    enum Operators op = (enum Operators)node->data;
+
+    Node *node_left = fold_consts(node->left);
+    Node *node_right = fold_consts(node->right);
+
+    // кибермув, кто прочитал тот гей
+    if (is_unary_op(op))
+        goto ret;
+
+    assert(node_left);
+    assert(node_right);
+
+    if (node_left->type == DT_CONST && node_right->type == DT_CONST)
+    {
+        tree_el_t res = execute_bin_op(op, node_left->data, node_right->data);
+        return const_node(res);
+    }
+
+    if (op == OP_ADD)
+    {
+        if (is_zero(node_left))
+            return CR;
+        if (is_zero(node_right))
+            return CL;
+    }
+    else if (op == OP_SUB)
+    {
+        if (is_zero(node_left))
+            return mul_node(const_node(-1), CR);
+        if (is_zero(node_right))
+            return CL;
+    }
+    else if (op == OP_MUL)
+    {
+        if (is_zero(node_left) || is_zero(node_right))
+            return const_node(0);
+        if (is_one(node_left))
+            return CR;
+        if (is_one(node_right))
+            return CL;
+        else if (node_left->type != DT_CONST && node_right->type == DT_CONST)
+            return mul_node(CR, CL);
+    }
+    else if (op == OP_DIV)
+    {
+        if (is_zero(node_left))
+            return const_node(0);
+        if (is_one(node_right))
+            return CL;
+        if (is_minus_one(node_right))
+            return mul_node(const_node(-1), CL);
+    }
+    else if (op == OP_POW)
+    {
+        if (is_zero(node_left))
+            return const_node(0);
+        if (is_zero(node_right))
+            return const_node(1);
+        if (is_one(node_left))
+            return const_node(1);
+        if (is_one(node_right))
+            return CL;
+        if (is_minus_one(node_right))
+            return div_node(const_node(1), CL);
+    }
+    else if (op == OP_ROOT)
+    {
+        if (is_zero(node_right))
+            return const_node(0);
+        if (is_one(node_right))
+            return const_node(1);
+    }
+
+ret:
+    return make_new_node(DT_OP, op, node_left, node_right);
+}
+
+tree_el_t execute_bin_op(enum Operators op, tree_el_t left, tree_el_t right)
+{
+    assert(!is_unary_op(op));
+
+    switch (op)
+    {
+    case OP_ADD:
+        return left + right;
+    case OP_SUB:
+        return left - right;
+    case OP_MUL:
+        return left * right;
+    case OP_DIV:
+        return left / right;
+    case OP_POW:
+        return pow(left, right);
+    case OP_ROOT:
+        return pow(right, 1. / left);
+    default:
+        assert("HUIIIIIII" && 0);
+        return 0.;
+    }
+}
+
 int is_unary_op(enum Operators op)
 {
     return (int)op >= 6;
@@ -173,4 +300,49 @@ const char *get_str_variable(enum Variables var)
 const char *get_str_node_data_type(NodeDataType type)
 {
     return STR_NODE_DATA_TYPES[type];
+}
+
+int is_equal(double a, double b)
+{
+    return fabs(a - b) < EPSILON;
+}
+
+static int is_zero(Node *node)
+{
+    assert(node);
+
+    if (node->type != DT_CONST)
+        return 0;
+
+    return is_equal(node->data, 0);
+}
+
+static int is_one(Node *node)
+{
+    assert(node);
+
+    if (node->type != DT_CONST)
+        return 0;
+
+    return is_equal(node->data, 1);
+}
+
+static int is_minus_one(Node *node)
+{
+    assert(node);
+
+    if (node->type != DT_CONST)
+        return 0;
+
+    return is_equal(node->data, -1);
+}
+
+static int is_e(Node *node)
+{
+    assert(node);
+
+    if (node->type != DT_VAR)
+        return 0;
+
+    return (enum Variables)node->data == VAR_E;
 }

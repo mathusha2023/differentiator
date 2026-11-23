@@ -166,6 +166,8 @@ static void process_mul_operator(Node *node, FILE *file)
         dump_node_to_tex(node->left, file);
         fprintf(file, ")");
     }
+    else if (node->left->type == DT_CONST && is_equal(node->left->data, -1))
+        fprintf(file, "-");
     else
         dump_node_to_tex(node->left, file);
 
@@ -173,6 +175,8 @@ static void process_mul_operator(Node *node, FILE *file)
     if (node->left->type == DT_CONST && node->right->type == DT_VAR)
         ;
     else if (node->left->type == DT_VAR && node->right->type == DT_VAR)
+        ;
+    else if (node->left->type == DT_CONST && is_equal(node->left->data, -1))
         ;
     else
         fprintf(file, " \\cdot ");

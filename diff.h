@@ -3,6 +3,7 @@
 
 typedef struct Node Node;
 typedef struct BinTree BinTree;
+typedef double tree_el_t;
 
 enum Variables
 {
@@ -105,11 +106,16 @@ static const char *STR_NODE_DATA_TYPES[] = {
 void diff_tree(BinTree *tree, BinTree *dtree, enum Variables diff_var);
 Node *diff(Node *node, enum Variables diff_var);
 Node *diff_operator(Node *node_left, Node *node_right, enum Operators op, enum Variables diff_var);
+Node *fold_consts(Node *node);
 
+tree_el_t execute_bin_op(enum Operators op, tree_el_t left, tree_el_t right);
 int is_unary_op(enum Operators op);
+
 const char *get_str_operator(enum Operators op);
 const char *get_str_tex_operator(enum Operators op);
 const char *get_str_variable(enum Variables var);
 const char *get_str_node_data_type(NodeDataType type);
+
+int is_equal(double a, double b);
 
 #endif // DIFF_H

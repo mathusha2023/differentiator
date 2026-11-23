@@ -53,6 +53,9 @@ BinTreeError tree_insert_node(BinTree *tree, Node *node, ChildType child_type, N
 Node *make_new_node(NodeDataType type, tree_el_t data, Node *left, Node *right);
 Node *copy_node(Node *node);
 
+size_t count_tree_size(BinTree *tree);
+size_t count_nodes(Node *node);
+
 void tree_destroy(BinTree *tree);
 void node_destroy(Node **node);
 

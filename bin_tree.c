@@ -108,6 +108,20 @@ Node *copy_node(Node *node)
     return make_new_node(node->type, node->data, copy_node(node->left), copy_node(node->right));
 }
 
+size_t count_tree_size(BinTree *tree)
+{
+    assert(tree);
+
+    return count_nodes(tree->root);
+}
+
+size_t count_nodes(Node *node)
+{
+    if (!node)
+        return 0;
+    return count_nodes(node->left) + count_nodes(node->right) + 1;
+}
+
 void tree_destroy(BinTree *tree)
 {
     assert(tree);
