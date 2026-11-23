@@ -12,7 +12,7 @@ static int is_one(Node *node);
 static int is_minus_one(Node *node);
 static int is_e(Node *node);
 
-void diff_tree(BinTree *tree, BinTree *dtree, enum Variables diff_var)
+BinTree diff_tree(BinTree *tree, enum Variables diff_var)
 {
     BinTree tmp_tree = {};
     tmp_tree.root = diff(tree->root, diff_var);
@@ -20,13 +20,17 @@ void diff_tree(BinTree *tree, BinTree *dtree, enum Variables diff_var)
     FLOG("<h1>Tree after diff without constants folding:</h1>");
     tree_dump(&tmp_tree);
 
-    dtree->root = fold_consts(tmp_tree.root);
-    dtree->n_nodes = count_tree_size(dtree);
+    BinTree dtree = {};
+
+    dtree.root = fold_consts(tmp_tree.root);
+    dtree.n_nodes = count_tree_size(&dtree);
 
     tree_destroy(&tmp_tree);
 
     FLOG("<h1>Tree after diff with constant folding:</h1>");
-    tree_dump(dtree);
+    tree_dump(&dtree);
+
+    return dtree;
 }
 
 Node *diff(Node *node, enum Variables diff_var)

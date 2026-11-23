@@ -105,7 +105,7 @@ static const char *STR_NODE_DATA_TYPES[] = {
     "DT_OP",
 };
 
-void diff_tree(BinTree *tree, BinTree *dtree, enum Variables diff_var);
+BinTree diff_tree(BinTree *tree, enum Variables diff_var);
 Node *diff(Node *node, enum Variables diff_var);
 Node *diff_operator(Node *node_left, Node *node_right, enum Operators op, enum Variables diff_var);
 Node *fold_consts(Node *node);

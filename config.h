@@ -25,6 +25,7 @@ const char LOG_DIRECTORY[] = "log";
 const char GRAPH_DIRECTORY[] = "log";
 const char PROGRAM_NAME[] = "diff";
 
+// поменяйте названия файлов для собвственной настройки программы
 const char DATA_FILE_NAME[] = "data.txt";
 const char TEX_FILE_NAME[] = "output.tex";
 
