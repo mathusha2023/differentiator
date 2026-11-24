@@ -1,0 +1,1 @@
+(div (mul (pow (e nil nil) (add (mul (5 nil nil) (x nil nil)) (1 nil nil))) (add (pow (x nil nil) (3 nil nil)) (sqrt nil (sub (x nil nil) (2 nil nil))))) (sub (add (pow (x nil nil) (2 nil nil)) (mul (3 nil nil) (x nil nil))) (10 nil nil)))
