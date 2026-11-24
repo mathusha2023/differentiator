@@ -18,6 +18,7 @@ void init_tex(const char *tex_filename)
     fprintf(file, "\\documentclass{article}\n\\usepackage{amsmath}\n");
     fprintf(file, "\\usepackage[utf8]{inputenc}\n\\usepackage[T2A]{fontenc}\n\\usepackage[russian]{babel}\n");
     fprintf(file, "\\usepackage[a%upaper, hmargin=1cm, vmargin=2cm]{geometry}\n\\usepackage{mdframed}\n\\usepackage{breqn}\n", PDF_LIST_FORMAT);
+    fprintf(file, "\\setlength{\\parindent}{0pt}\n");
     fprintf(file, "\\mdfsetup{\nlinewidth=1pt,\ninnertopmargin=6pt,\ninnerbottommargin=6pt,\ninnerleftmargin=8pt,\ninnerrightmargin=8pt\n}\n\n");
 
     fprintf(file, "\\begin{document}\n\n");

@@ -389,7 +389,7 @@ Node *fold_consts(Node *node)
             return CR;
         if (is_one(node_right))
             return CL;
-        else if (node_left->type != DT_CONST && node_right->type == DT_CONST)
+        if (node_left->type != DT_CONST && node_right->type == DT_CONST)
             return mul_node(CR, CL);
     }
     else if (op == OP_DIV)
