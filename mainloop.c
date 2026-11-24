@@ -77,7 +77,7 @@ static int diff_func(BinTree *tree, const char *tex_file_name)
 
     init_tex(tex_file_name);
 
-    int error = dump_tree_to_tex(tree, tex_file_name);
+    int error = dump_tree_to_tex(tree, tex_file_name, TM_FUNCTION, VAR_X, 0);
     if (error)
     {
         LOG("Error while dumping tree do tex!");
@@ -86,12 +86,12 @@ static int diff_func(BinTree *tree, const char *tex_file_name)
 
     BinTree dtree = diff_tree(tree, diff_var);
 
-    dump_tree_to_tex(&dtree, tex_file_name);
+    dump_tree_to_tex(&dtree, tex_file_name, TM_DERIVATIVE, diff_var, 1);
 
     tree_destroy(&dtree);
 
     close_tex(tex_file_name);
-    generate_tex(tex_file_name);
+    generate_tex_pdf(tex_file_name);
 
     printf("Готово! Результат записан в %s, также был сгенерирован .pdf файл с аналогичным названием\n", tex_file_name);
 

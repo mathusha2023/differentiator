@@ -32,7 +32,7 @@ void close_tex(const char *tex_filename)
     fclose(file);
 }
 
-void generate_tex(const char *tex_filename)
+void generate_tex_pdf(const char *tex_filename)
 {
     assert(tex_filename);
 
@@ -40,18 +40,21 @@ void generate_tex(const char *tex_filename)
     FLOG("Beginning .pdf generating...");
     FLOG("TEX output:");
 
-    const char *const command = "pdflatex %s >> %s &";
+    const char *const command = "pdflatex -interaction=nonstopmode -halt-on-error %s >> %s &";
     if (snprintf(buff, MAX_SYS_COMMAND_LENGTH, command, tex_filename, LOGFILE_NAME) < 0)
     {
         LOG("Error while generating .pdf from %s file", tex_filename);
         return;
     }
-    FLOG("Generating successful");
 
     system(buff);
+
+    FLOG("Generating ended!");
 }
 
-int dump_tree_to_tex(BinTree *tree, const char *tex_filename)
+// extra - поле для дополнительной информации. например, через него передается порядок производной
+// при распечатке как производной n-го порядка
+int dump_tree_to_tex(BinTree *tree, const char *tex_filename, enum TexMode tex_mode, enum Variables diff_var, int extra)
 {
     assert(tree);
     assert(tex_filename);
@@ -65,10 +68,29 @@ int dump_tree_to_tex(BinTree *tree, const char *tex_filename)
 
     fprintf(file, "\\begin{dmath*}\n");
 
+    switch (tex_mode)
+    {
+    case TM_FUNCTION:
+        fprintf(file, "f \\hiderel{=} ");
+        break;
+    case TM_DERIVATIVE:
+        fprintf(file, "f'_{%s} \\hiderel{=} ", get_str_variable(diff_var));
+        break;
+    case TM_N_DERIVATIVE:
+        fprintf(file, "f^{(%d)}_{%s} \\hiderel{=} ", extra, get_str_variable(diff_var));
+        break;
+    default:
+        LOG("ERROR: incorrect TexMode");
+        return 1;
+    }
+
     if (tree->root)
         dump_node_to_tex(tree->root, file);
     else
-        FLOG("WARNING: tree will be written in file '%s' is void", tex_filename);
+    {
+        LOG("WARNING: tree will be written in file '%s' is void", tex_filename);
+        fprintf(file, "0");
+    }
 
     fprintf(file, "\n\\end{dmath*}\n");
 
