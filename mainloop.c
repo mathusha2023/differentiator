@@ -12,6 +12,15 @@ static void flush_console(void);
 static int is_correct_cmd(int cmd);
 static int is_correct_var(char *str_var);
 
+#define mainloop_check_error(err_msg, ...) \
+    {                                      \
+        if (error)                         \
+        {                                  \
+            LOG(err_msg, ##__VA_ARGS__);   \
+            return error;                  \
+        }                                  \
+    }
+
 int mainloop(const char *data_file_name, const char *tex_file_name)
 {
     assert(data_file_name);
@@ -77,16 +86,26 @@ static int diff_func(BinTree *tree, const char *tex_file_name)
 
     init_tex(tex_file_name);
 
-    int error = dump_tree_to_tex(tree, tex_file_name, TM_FUNCTION, VAR_X, 0);
-    if (error)
-    {
-        LOG("Error while dumping tree do tex!");
-        return error;
-    }
+    int error = 0;
+
+    error = write_text_to_tex(tex_file_name, "\\textbf{Задание:} найти производную функции\n");
+    mainloop_check_error("Error while writing text to tex");
+
+    error = dump_tree_to_tex(tree, tex_file_name, TM_FUNCTION, VAR_X, 0, 0);
+    mainloop_check_error("Error while dumping function tree to tex");
+
+    error = write_text_to_tex(tex_file_name, "\nпо переменной $%s$.\n", get_str_variable(diff_var));
+    mainloop_check_error("Error while writing text to tex");
+
+    error = write_text_to_tex(tex_file_name, "\n\\begin{center}\n{\\Large\\textbf{Решение:}}\n\\end{center}\n\n");
+    mainloop_check_error("Error while writing text to tex");
 
     BinTree dtree = diff_tree(tree, diff_var);
 
-    dump_tree_to_tex(&dtree, tex_file_name, TM_DERIVATIVE, diff_var, 1);
+    error = write_text_to_tex(tex_file_name, "\n\\begin{center}\n{\\Large\\textbf{Ответ:}}\n\\end{center}\n\n");
+    mainloop_check_error("Error while writing text to tex");
+
+    dump_tree_to_tex(&dtree, tex_file_name, TM_DERIVATIVE, diff_var, 1, 1);
 
     tree_destroy(&dtree);
 

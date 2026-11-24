@@ -1,6 +1,7 @@
 #include "tex.h"
 #include <assert.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "log.h"
 #include "bin_tree.h"
 
@@ -14,7 +15,11 @@ void init_tex(const char *tex_filename)
     FILE *file = fopen(tex_filename, "w");
     assert(file);
 
-    fprintf(file, "\\documentclass{article}\n\\usepackage{amsmath}\n\\usepackage{breqn}\n\n");
+    fprintf(file, "\\documentclass{article}\n\\usepackage{amsmath}\n");
+    fprintf(file, "\\usepackage[utf8]{inputenc}\n\\usepackage[T2A]{fontenc}\n\\usepackage[russian]{babel}\n");
+    fprintf(file, "\\usepackage[a%upaper, hmargin=1cm, vmargin=2cm]{geometry}\n\\usepackage{mdframed}\n\\usepackage{breqn}\n", PDF_LIST_FORMAT);
+    fprintf(file, "\\mdfsetup{\nlinewidth=1pt,\ninnertopmargin=6pt,\ninnerbottommargin=6pt,\ninnerleftmargin=8pt,\ninnerrightmargin=8pt\n}\n\n");
+
     fprintf(file, "\\begin{document}\n\n");
 
     fclose(file);
@@ -52,9 +57,32 @@ void generate_tex_pdf(const char *tex_filename)
     FLOG("Generating ended!");
 }
 
+int write_text_to_tex(const char *tex_filename, const char *const text, ...)
+{
+    assert(tex_filename);
+    assert(text);
+
+    FILE *file = fopen(tex_filename, "a");
+    if (!file)
+    {
+        FLOG("Error: can not open tex file '%s'", tex_filename);
+        return 1;
+    }
+
+    va_list args = {};
+    va_start(args, text);
+
+    vfprintf(file, text, args);
+
+    va_end(args);
+    fclose(file);
+
+    return 0;
+}
+
 // extra - поле для дополнительной информации. например, через него передается порядок производной
 // при распечатке как производной n-го порядка
-int dump_tree_to_tex(BinTree *tree, const char *tex_filename, enum TexMode tex_mode, enum Variables diff_var, int extra)
+int dump_tree_to_tex(BinTree *tree, const char *tex_filename, enum TexMode tex_mode, enum Variables diff_var, int extra, int boxed)
 {
     assert(tree);
     assert(tex_filename);
@@ -66,10 +94,16 @@ int dump_tree_to_tex(BinTree *tree, const char *tex_filename, enum TexMode tex_m
         return 1;
     }
 
+    if (boxed)
+        fprintf(file, "\\begin{mdframed}\n");
+
     fprintf(file, "\\begin{dmath*}\n");
 
     switch (tex_mode)
     {
+    case TM_NO_FUNCTION:
+        fprintf(file, "({");
+        break;
     case TM_FUNCTION:
         fprintf(file, "f \\hiderel{=} ");
         break;
@@ -92,7 +126,13 @@ int dump_tree_to_tex(BinTree *tree, const char *tex_filename, enum TexMode tex_m
         fprintf(file, "0");
     }
 
+    if (tex_mode == TM_NO_FUNCTION)
+        fprintf(file, "})'");
+
     fprintf(file, "\n\\end{dmath*}\n");
+
+    if (boxed)
+        fprintf(file, "\n\\end{mdframed}\n");
 
     fclose(file);
 
@@ -174,6 +214,34 @@ void dump_node_to_tex(Node *node, FILE *file)
         else
             dump_node_to_tex(node->right, file);
     }
+}
+
+int dump_equal_nodes_to_tex(Node *node1, Node *node2, const char *tex_filename)
+{
+    assert(node1);
+    assert(node2);
+    assert(tex_filename);
+
+    FILE *file = fopen(tex_filename, "a");
+    if (!file)
+    {
+        FLOG("Error: can not open tex file '%s'", tex_filename);
+        return 1;
+    }
+
+    fprintf(file, "\\begin{dmath*}\n");
+
+    fprintf(file, "{(");
+    dump_node_to_tex(node1, file);
+    fprintf(file, ")}'");
+
+    fprintf(file, " = ");
+    dump_node_to_tex(node2, file);
+
+    fprintf(file, "\n\\end{dmath*}\n");
+
+    fclose(file);
+    return 0;
 }
 
 static void process_mul_operator(Node *node, FILE *file)

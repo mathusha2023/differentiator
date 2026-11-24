@@ -107,7 +107,7 @@ static const char *STR_NODE_DATA_TYPES[] = {
 
 BinTree diff_tree(BinTree *tree, enum Variables diff_var);
 Node *diff(Node *node, enum Variables diff_var);
-Node *diff_operator(Node *node_left, Node *node_right, enum Operators op, enum Variables diff_var);
+Node *diff_operator(Node *node, Node *node_left, Node *node_right, enum Operators op, enum Variables diff_var);
 Node *fold_consts(Node *node);
 
 tree_el_t execute_bin_op(enum Operators op, tree_el_t left, tree_el_t right);

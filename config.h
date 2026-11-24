@@ -28,6 +28,7 @@ const char PROGRAM_NAME[] = "diff";
 // поменяйте названия файлов для собвственной настройки программы
 const char DATA_FILE_NAME[] = "data.txt";
 const char TEX_FILE_NAME[] = "output.tex";
+const unsigned char PDF_LIST_FORMAT = /*A*/ 4;
 
 const size_t MAX_FILENAME_LENGTH = 100;
 const size_t MAX_SYS_COMMAND_LENGTH = 200;
